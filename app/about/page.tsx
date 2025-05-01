@@ -213,7 +213,7 @@ export default function AboutPage() {
 
               <div className="relative h-80 rounded-lg overflow-hidden">
                 <Image
-                  src="https://images.unsplash.com/photo-1622597467836-f3e6047cc116?q=80&w=600&auto=format"
+                  src="/images/juices/immunity.webp"
                   alt="Immunity Boosters"
                   fill
                   className="object-cover"

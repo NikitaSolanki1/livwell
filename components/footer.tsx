@@ -12,7 +12,7 @@ export function Footer() {
             <Link href="/" className="flex items-center gap-2">
               <span className="font-bold text-xl text-primary">Livwell</span>
             </Link>
-            <p className="text-muted-foreground">Fresh, healthy, and delicious juices delivered to your doorstep.</p>
+            <p className="text-muted-foreground">Fresh, healthy, and delicious dishes and juices delivered to your doorstep.</p>
             <div className="flex gap-4">
               <Button variant="ghost" size="icon" asChild>
                 <a href="https://instagram.com" target="_blank" rel="noopener noreferrer">
@@ -71,15 +71,15 @@ export function Footer() {
             <ul className="space-y-3">
               <li className="flex items-start gap-2">
                 <MapPin className="h-5 w-5 text-primary shrink-0 mt-0.5" />
-                <span className="text-muted-foreground">123 Health Street, Bikaner, Rajasthan 334001, India</span>
+                <span className="text-muted-foreground">123 JNV COLONY, Bikaner, Rajasthan 334001, India</span>
               </li>
               <li className="flex items-center gap-2">
                 <Phone className="h-5 w-5 text-primary" />
-                <span className="text-muted-foreground">+91 98765 43210</span>
+                <span className="text-muted-foreground">+91 78911 63463</span>
               </li>
               <li className="flex items-center gap-2">
                 <Mail className="h-5 w-5 text-primary" />
-                <span className="text-muted-foreground">hello@livwell.com</span>
+                <span className="text-muted-foreground">nikita102solanki@gmail.com</span>
               </li>
             </ul>
           </div>

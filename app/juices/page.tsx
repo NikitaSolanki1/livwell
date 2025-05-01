@@ -17,7 +17,8 @@ import Image from "next/image"
 
 export default function JuicesPage() {
   const [searchTerm, setSearchTerm] = useState("")
-  const [priceRange, setPriceRange] = useState([0, 10])
+  // Updated price range to match actual juice prices (50-100)
+  const [priceRange, setPriceRange] = useState([50, 100])
   const [selectedCategories, setSelectedCategories] = useState<string[]>([])
 
   const categories = Array.from(new Set(juices.map((juice) => juice.category)))
@@ -95,9 +96,10 @@ export default function JuicesPage() {
                   <div className="space-y-4">
                     <h3 className="font-medium">Price Range</h3>
                     <Slider
-                      defaultValue={[0, 10]}
-                      max={10}
-                      step={0.5}
+                      defaultValue={[50, 100]}
+                      min={50}
+                      max={100}
+                      step={5}
                       value={priceRange}
                       onValueChange={setPriceRange}
                     />
@@ -127,7 +129,7 @@ export default function JuicesPage() {
                     variant="outline"
                     className="w-full"
                     onClick={() => {
-                      setPriceRange([0, 10])
+                      setPriceRange([50, 100])
                       setSelectedCategories([])
                     }}
                   >

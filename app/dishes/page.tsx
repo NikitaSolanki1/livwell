@@ -17,7 +17,8 @@ import Image from "next/image"
 
 export default function DishesPage() {
   const [searchTerm, setSearchTerm] = useState("")
-  const [priceRange, setPriceRange] = useState([0, 20])
+  // Updated price range to match actual dish prices (0-200)
+  const [priceRange, setPriceRange] = useState([0, 200])
   const [selectedCategories, setSelectedCategories] = useState<string[]>([])
   const [dietaryFilters, setDietaryFilters] = useState<string[]>([])
   const [activeTab, setActiveTab] = useState("all")
@@ -29,6 +30,7 @@ export default function DishesPage() {
       dish.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       dish.description.toLowerCase().includes(searchTerm.toLowerCase())
 
+    // Price filter now works with actual dish prices
     const matchesPrice = dish.price >= priceRange[0] && dish.price <= priceRange[1]
 
     const matchesCategory = selectedCategories.length === 0 || selectedCategories.includes(dish.category)
@@ -208,6 +210,7 @@ export default function DishesPage() {
                     onClick={() => {
                       setSelectedCategories([])
                       setDietaryFilters([])
+                      setPriceRange([0, 200]) // Reset price range too
                     }}
                   >
                     Reset Filters
