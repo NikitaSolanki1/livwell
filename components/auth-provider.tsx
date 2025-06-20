@@ -3,159 +3,141 @@
 import type React from "react"
 
 import { createContext, useContext, useState, useEffect } from "react"
-import { type User, findUserByEmail, createUser, updateUserProfile } from "@/lib/data"
+import { useRouter } from "next/navigation"
+import { onAuthStateChanged, User as FirebaseUser } from "firebase/auth"
+import { auth } from "@/lib/firebase"
+import { signIn, signUp, signOut } from "@/lib/firebase-service"
 import { useToast } from "@/components/ui/use-toast"
+
+type User = {
+  uid: string
+  email: string | null
+  displayName: string | null
+}
 
 type AuthContextType = {
   user: User | null
   login: (email: string, password: string) => Promise<boolean>
-  demoLogin: () => Promise<boolean>
   signup: (name: string, email: string, password: string) => Promise<boolean>
-  logout: () => void
-  updateProfile: (data: Partial<User>) => Promise<User | null>
+  logout: () => Promise<void>
   isLoading: boolean
 }
 
 const AuthContext = createContext<AuthContextType>({
   user: null,
   login: async () => false,
-  demoLogin: async () => false,
   signup: async () => false,
-  logout: () => {},
-  updateProfile: async () => null,
+  logout: async () => {},
   isLoading: true,
 })
-
-// Update the demo user email
-export const DEMO_USER = {
-  email: "demo@livwell.com",
-  password: "demo123",
-}
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const { toast } = useToast()
+  const router = useRouter()
 
   useEffect(() => {
-    // Check if user is logged in from localStorage
-    const storedUser = localStorage.getItem("user")
-    if (storedUser) {
-      setUser(JSON.parse(storedUser))
-    }
-    setIsLoading(false)
+    const unsubscribe = onAuthStateChanged(auth, (user: FirebaseUser | null) => {
+      if (user) {
+        setUser({
+          uid: user.uid,
+          email: user.email,
+          displayName: user.displayName,
+        })
+      } else {
+        setUser(null)
+      }
+      setIsLoading(false)
+    })
+
+    return () => unsubscribe()
   }, [])
 
   const login = async (email: string, password: string) => {
-    const foundUser = findUserByEmail(email)
+    try {
+      const { user, error } = await signIn(email, password)
+      
+      if (error) {
+        toast({
+          title: "Login failed",
+          description: "Invalid email or password",
+          variant: "destructive",
+        })
+        return false
+      }
 
-    if (foundUser && foundUser.password === password) {
-      setUser(foundUser)
-      localStorage.setItem("user", JSON.stringify(foundUser))
       toast({
         title: "Login successful",
-        description: `Welcome back, ${foundUser.name}!`,
+        description: `Welcome back${user && user.displayName ? ", " + user.displayName : ""}!`,
       })
       return true
-    }
-
-    toast({
-      title: "Login failed",
-      description: "Invalid email or password",
-      variant: "destructive",
-    })
-    return false
-  }
-
-  const demoLogin = async () => {
-    // Demo user credentials
-    const demoUser = {
-      id: "demo-user",
-      name: "Demo User",
-      email: DEMO_USER.email,
-      password: DEMO_USER.password,
-      address: "123 Demo Street, Demo City, 12345",
-      phone: "555-123-4567",
-    }
-
-    // Check if demo user exists, if not create it
-    const existingUser = findUserByEmail(demoUser.email)
-    if (!existingUser) {
-      createUser({
-        name: demoUser.name,
-        email: demoUser.email,
-        password: demoUser.password,
-        address: demoUser.address,
-        phone: demoUser.phone,
-      })
-    }
-
-    // Login as demo user
-    setUser(existingUser || demoUser)
-    localStorage.setItem("user", JSON.stringify(existingUser || demoUser))
-
-    toast({
-      title: "Demo login successful",
-      description: "You are now logged in as a demo user",
-    })
-
-    return true
-  }
-
-  const signup = async (name: string, email: string, password: string) => {
-    const existingUser = findUserByEmail(email)
-
-    if (existingUser) {
+    } catch (error) {
       toast({
-        title: "Signup failed",
-        description: "Email already in use",
+        title: "Login failed",
+        description: "An unexpected error occurred",
         variant: "destructive",
       })
       return false
     }
-
-    const newUser = createUser({ name, email, password })
-    setUser(newUser)
-    localStorage.setItem("user", JSON.stringify(newUser))
-
-    toast({
-      title: "Account created",
-      description: "Your account has been created successfully",
-    })
-    return true
   }
 
-  const logout = () => {
-    setUser(null)
-    localStorage.removeItem("user")
-    toast({
-      title: "Logged out",
-      description: "You have been logged out successfully",
-    })
-  }
+  const signup = async (name: string, email: string, password: string) => {
+    try {
+      const { user, error } = await signUp(email, password, name)
 
-  const updateProfile = async (data: Partial<User>) => {
-    if (!user) return null
-
-    const updatedUser = updateUserProfile(user.id, data)
-    if (updatedUser) {
-      setUser(updatedUser)
-      localStorage.setItem("user", JSON.stringify(updatedUser))
+      if (error) {
+        toast({
+          title: "Signup failed",
+          description: "This email might already be in use",
+          variant: "destructive",
+        })
+        return false
+      }
 
       toast({
-        title: "Profile updated",
-        description: "Your profile has been updated successfully",
+        title: "Account created",
+        description: "Welcome to Livwell!",
       })
+      return true
+    } catch (error) {
+      toast({
+        title: "Signup failed",
+        description: "An unexpected error occurred",
+        variant: "destructive",
+      })
+      return false
     }
-
-    return updatedUser
   }
 
-  return (
-    <AuthContext.Provider value={{ user, login, demoLogin, signup, logout, updateProfile, isLoading }}>
-      {children}
-    </AuthContext.Provider>
-  )
+  const logout = async () => {
+    try {
+      await signOut()
+      router.push("/")
+      toast({
+        title: "Logged out",
+        description: "You have been successfully logged out",
+      })
+    } catch (error) {
+      toast({
+        title: "Logout failed",
+        description: "An unexpected error occurred",
+        variant: "destructive",
+      })
+    }
+  }
+
+  const value = {
+    user,
+    login,
+    signup,
+    logout,
+    isLoading,
+  }
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 }
 
-export const useAuth = () => useContext(AuthContext)
+export function useAuth() {
+  return useContext(AuthContext)
+}
