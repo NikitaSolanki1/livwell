@@ -2,8 +2,7 @@
 import Link from "next/link"
 import Image from "next/image"
 import { motion } from "framer-motion"
-import { useEffect, useState } from "react"
-import { getProducts, Product } from "@/lib/firebase-service"
+ import { dishes } from "@/lib/data"
 import { DishCard } from "@/components/dish-card"
 import { Button } from "@/components/ui/button"
 
@@ -20,24 +19,7 @@ const dishImages = {
 }
 
 export function FeaturedDishes() {
-  const [featuredDishes, setFeaturedDishes] = useState<Product[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-
-  useEffect(() => {
-    const fetchDishes = async () => {
-      setLoading(true)
-      const { products, error } = await getProducts("meal")
-      if (error) {
-        setError("Failed to load dishes.")
-        setLoading(false)
-        return
-      }
-      setFeaturedDishes(products.filter((dish) => dish.featured).slice(0, 3))
-      setLoading(false)
-    }
-    fetchDishes()
-  }, [])
+  const featuredDishes = dishes.filter((dish) => dish.featured).slice(0, 3)
 
   return (
     <section className="py-16 bg-muted/30">
@@ -63,52 +45,18 @@ export function FeaturedDishes() {
           </div>
         </div>
 
-        {loading ? (
-          <div className="text-center py-8">Loading...</div>
-        ) : error ? (
-          <div className="text-center py-8 text-destructive">{error}</div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {featuredDishes.map((dish, index) => {
-              // Map Firestore product to Dish type for DishCard
-              const dishData = {
-                id: dish.id || "",
-                name: dish.name,
-                description: dish.description,
-                category: dish.category || "",
-                price: dish.price,
-                image: (dishImages as Record<string, string>)[dish.name] || dish.imageUrl || "/placeholder.svg",
-                ingredients: [],
-                nutritionalInfo: {
-                  calories: 0,
-                  protein: 0,
-                  carbs: 0,
-                  fat: 0,
-                  fiber: 0,
-                },
-                prepTime: 0,
-                cookTime: 0,
-                featured: dish.featured,
-                popular: dish.popular,
-                new: dish.new,
-                vegan: false,
-                vegetarian: false,
-                glutenFree: false,
-                dairyFree: false,
-              }
-              return (
-                <motion.div
-                  key={dish.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.3, delay: index * 0.1 }}
-                >
-                  <DishCard dish={dishData} />
-                </motion.div>
-              )
-            })}
-          </div>
-        )}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {featuredDishes.map((dish, index) => (
+            <motion.div
+              key={dish.id}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3, delay: index * 0.1 }}
+            >
+              <DishCard dish={{ ...dish, image: (dishImages as Record<string, string>)[dish.name] || dish.image }} />
+            </motion.div>
+          ))}
+        </div>
 
         <div className="flex justify-center mt-12">
           <Button size="lg" asChild>

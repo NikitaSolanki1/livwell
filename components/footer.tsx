@@ -167,11 +167,7 @@ export function Footer() {
               Subscribe to our newsletter for the latest updates and offers.
             </p>
             <form onSubmit={handleSubscribe} className="space-y-2">
-              <label htmlFor="newsletter-email" className="sr-only">
-                Email address
-              </label>
               <Input
-                id="newsletter-email"
                 type="email"
                 placeholder="Your email address"
                 className="bg-background"

@@ -70,8 +70,9 @@ export type Order = {
   userId: string
   items: CartItem[]
   total: number
-  status: "pending" | "processing" | "delivered"
+  status: "pending" | "processing" | "delivered" | "completed"
   paymentMethod: "cod" | "upi"
+  paymentId?: string
   createdAt: Date
   address: string
   phone: string

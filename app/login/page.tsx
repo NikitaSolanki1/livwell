@@ -93,7 +93,6 @@ export default function LoginPage() {
                   <Button className="w-full" type="submit" disabled={isLoading}>
                     {isLoading ? "Logging in..." : "Login"}
                   </Button>
-
                   <p className="mt-2 text-center text-sm text-muted-foreground">
                     Don't have an account?{" "}
                     <Link href="/signup" className="text-primary underline-offset-4 hover:underline">

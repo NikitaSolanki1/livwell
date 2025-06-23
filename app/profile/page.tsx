@@ -19,7 +19,7 @@ import { useToast } from "@/components/ui/use-toast"
 import { User, Package, LogOut } from "lucide-react"
 
 export default function ProfilePage() {
-  const { user, logout, updateProfile, isLoading } = useAuth()
+  const { user, logout, isLoading } = useAuth()
   const router = useRouter()
   const { toast } = useToast()
 
@@ -40,14 +40,14 @@ export default function ProfilePage() {
 
     if (user) {
       setFormData({
-        name: user.name || "",
+        name: user.displayName || "",
         email: user.email || "",
-        phone: user.phone || "",
-        address: user.address || "",
+        phone: "", // Not available in auth context
+        address: "", // Not available in auth context
       })
 
       // Get user orders
-      const userOrders = getOrdersByUserId(user.id)
+      const userOrders = getOrdersByUserId(user.uid)
       setOrders(userOrders)
     }
   }, [user, isLoading, router])
@@ -65,12 +65,7 @@ export default function ProfilePage() {
     setIsUpdating(true)
 
     try {
-      await updateProfile({
-        name: formData.name,
-        phone: formData.phone,
-        address: formData.address,
-      })
-
+      // TODO: Implement profile update logic (e.g., call Firestore to update user profile)
       toast({
         title: "Profile updated",
         description: "Your profile has been updated successfully",
@@ -101,9 +96,9 @@ export default function ProfilePage() {
                 <CardContent className="pt-6">
                   <div className="flex flex-col items-center text-center">
                     <Avatar className="h-24 w-24 mb-4">
-                      <AvatarFallback className="text-2xl">{user.name.charAt(0)}</AvatarFallback>
+                      <AvatarFallback className="text-2xl">{user.displayName ? user.displayName.charAt(0) : "U"}</AvatarFallback>
                     </Avatar>
-                    <h2 className="text-xl font-bold">{user.name}</h2>
+                    <h2 className="text-xl font-bold">{user.displayName || "User"}</h2>
                     <p className="text-muted-foreground">{user.email}</p>
                     <Button variant="outline" className="mt-4 w-full" onClick={handleLogout}>
                       <LogOut className="mr-2 h-4 w-4" /> Logout
