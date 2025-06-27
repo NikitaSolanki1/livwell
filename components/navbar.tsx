@@ -11,6 +11,7 @@ import { useAuth } from "@/components/auth-provider"
 import { useCart } from "@/components/cart-provider"
 import { Badge } from "@/components/ui/badge"
 
+
 export function Navbar() {
   const pathname = usePathname()
   const { theme, setTheme } = useTheme()
@@ -122,3 +123,4 @@ export function Navbar() {
     </header>
   )
 }
+

@@ -7,6 +7,7 @@ import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { ArrowDown, ArrowRight } from "lucide-react"
 
+
 export function Hero() {
   const featuredRef = useRef<HTMLDivElement>(null)
 

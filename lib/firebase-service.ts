@@ -137,3 +137,5 @@ export const getProducts = async (type?: "juice" | "meal") => {
     return { products: [], error }
   }
 }
+
+export { db };

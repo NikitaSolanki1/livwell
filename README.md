@@ -139,3 +139,55 @@ MIT
 
 ## Contact
 For support, open an issue or contact the maintainer.
+
+---
+
+## Frontend Key Features
+
+### 1. Modern Responsive UI
+- Built with React and Next.js App Router for fast, seamless navigation.
+- Fully responsive design using Tailwind CSS, ensuring optimal experience on mobile, tablet, and desktop.
+- Clean, modern layouts with accessible color schemes and intuitive navigation.
+
+### 2. Dynamic Menu Browsing
+- Users can browse a rich menu of healthy dishes and juices, with product images, descriptions, and nutrition info.
+- Menu items are organized by category (dishes, juices, etc.) for easy discovery.
+- Featured and seasonal items are highlighted on the homepage.
+
+### 3. Cart Management
+- Add, remove, and update quantities of items in the cart from any page.
+- Cart state is preserved across navigation and page reloads.
+- Real-time price calculation, including subtotal and shipping.
+
+### 4. Checkout Experience
+- Streamlined checkout form collects shipping address, contact info, and payment method.
+- Supports both Cash on Delivery (COD) and secure online payments via Razorpay (UPI/Card).
+- Order summary with itemized breakdown and total before payment.
+
+### 5. Online Payment Integration
+- Razorpay payment gateway integration for UPI and card payments.
+- Secure, real-time payment flow with error handling and user feedback.
+- Payment status and order confirmation displayed instantly after transaction.
+
+### 6. User Authentication & Profile
+- Firebase Auth integration for email/password signup and login.
+- Persistent user sessions with profile management (update name, email, phone, address).
+- Authenticated users can access order history and personalized features.
+
+### 7. Order History & Tracking
+- Users can view their past orders, including details, status, and payment method.
+- Real-time order status updates using Firestore listeners.
+- Each order includes a unique ID, date, and itemized receipt.
+
+### 8. Admin Dashboard (if enabled)
+- Admins can view all orders, filter by status, and update order progress.
+- Secure access control ensures only authorized users can manage orders.
+
+### 9. Notifications & Feedback
+- Toast notifications for key actions: order placed, payment success/failure, profile updates, etc.
+- Clear error messages and loading indicators for all async operations.
+
+### 10. Accessibility & Best Practices
+- Keyboard navigable forms and buttons.
+- Semantic HTML and ARIA attributes for screen readers.
+- Optimized images and assets for fast load times.
